@@ -13,6 +13,8 @@ azure-ai-formrecognizer = "^3.3.2"
 numpy = "^1.26.3"
 opencv-python = "^4.9.0.80"
 textdistance = "^4.6.1"
+fastapi = "^0.110.1"
+pymongo = "^4.6.3"
 
 
 [tool.poetry.group.dev.dependencies]
