@@ -4,7 +4,7 @@ import pandas as pd
 
 from glob import glob
 
-from src.receipt import Receipt, BerkeleyBowlReceipt
+from api.receipt import Receipt, BerkeleyBowlReceipt
 
 receipt_class_dict = {
     'berkeley_bowl': BerkeleyBowlReceipt,
