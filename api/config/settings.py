@@ -7,3 +7,14 @@ class MongoSettings(BaseSettings):
     
     class Config:
         env_file = "mongodb-login.env"
+
+
+
+class AzureContainerSettings(BaseSettings):
+    container_url: str
+    
+    class Config:
+        env_file = "azure-container-credentials.env"
+
+
+        

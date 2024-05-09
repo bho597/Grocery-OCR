@@ -20,6 +20,8 @@ python-multipart = "^0.0.9"
 pillow = "^10.3.0"
 pydantic = "^2.7.1"
 pydantic-settings = "^2.2.1"
+azure-identity = "^1.16.0"
+azure-storage-blob = "^12.20.0"
 
 
 [tool.poetry.group.dev.dependencies]
