@@ -1,4 +1,4 @@
-from api.config.azurecontainer import blob_service_client
+from api.config.azurecontainer import blob_service_client, generate_url
 
 def upload_to_cloud_store(filepath: str):
     filename = filepath.split('/')[-1]
@@ -12,6 +12,11 @@ def upload_to_cloud_store(filepath: str):
     with open(file=filepath, mode="rb") as data:
         blob_client.upload_blob(data)
 
+    blob_url = blob_client.url
+
+    print("Uploaded blob URL:", blob_url)
+
+    return blob_url
 
 
 
@@ -23,7 +28,26 @@ def upload_to_cloud_store(filepath: str):
 # upload_to_cloud_store(glob('assets/verified/*')[0])
 
 
+import requests
+from PIL import Image
+from io import BytesIO
 
+def display_image_from_url(url):
+    try:
+        response = requests.get(url)
+        # print(response)
+        img_data = response.content
+        img = Image.open(BytesIO(img_data))
+        img.show()
+    except Exception as e:
+        print("Error:", e)
+
+# Example usage:
+# Assuming blob_url is the URL of the uploaded blob
+blob_url = generate_url("20231029_costco.jpg")
+# print(blob_url)
+
+display_image_from_url(blob_url)
 
 
 
