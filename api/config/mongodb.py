@@ -7,10 +7,6 @@ MONGO_URI = f"mongodb+srv://{settings.mongo_user}:{settings.mongo_password}@{set
 
 client = MongoClient(MONGO_URI)
 
-# receipt = {
-#     "store": "test",
-# }
-
 database = client.grocery_ocr
 receipts = database.receipts
 line_items = database.line_items

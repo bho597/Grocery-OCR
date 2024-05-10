@@ -4,7 +4,8 @@ from typing import Optional
 from pydantic import BaseModel, AnyHttpUrl, validator
 
 
-class CreateReceipt(BaseModel):
+class Receipt(BaseModel):
+    filename: str
     merchant_name: str
     # receipt_date: date
     receipt_date: str

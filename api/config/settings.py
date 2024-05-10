@@ -19,4 +19,10 @@ class AzureContainerSettings(BaseSettings):
         env_file = "azure-container-credentials.env"
 
 
-        
+
+class AzureDocumentIntelligenceSettings(BaseSettings):
+    endpoint: str
+    key: str
+    
+    class Config:
+        env_file = "azure-document-intelligence.env"

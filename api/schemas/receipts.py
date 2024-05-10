@@ -1,4 +1,14 @@
 def receiptEntity(item) -> dict:
+    """
+    Convert MongoDB BSON format to Python dictionary
+
+    #TODO: Complete docstring
+    Args:
+        item (_type_): _description_
+
+    Returns:
+        dict: A Python dictionary representing MongoDB item
+    """    
     return {
         "id": str(item["_id"]),
         "filename": str(item["filename"]),
@@ -13,4 +23,14 @@ def receiptEntity(item) -> dict:
     }
 
 def receiptEntities(entities) -> list:
+    """
+    Process list of receipt entities.
+
+    #TODO: Complete docstring
+    Args:
+        entities (_type_): _description_
+
+    Returns:
+        list: list of receipt dictionaries
+    """    
     return [receiptEntity(item) for item in entities]
