@@ -35,30 +35,42 @@ def _upload_to_cloud_store(filepath: str) -> str:
 
 
 def _azure_document_analysis(blob_name):
-    blob_url = generate_url(blob_name)
-    blob_content = requests.get(blob_url).content
+    
+    # blob_url = generate_url(blob_name)
+    # blob_content = requests.get(blob_url).content
 
-    try:
-        poller_receipt = document_analysis_client.begin_analyze_document("prebuilt-receipt", blob_content)
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+    # try:
+    #     poller_receipt = document_analysis_client.begin_analyze_document("prebuilt-receipt", blob_content)
+    # except Exception as e:
+    #     logger.error("Error analyzing %r: %s" % (blob_name, e))
+    #     raise
+    # else:
 
-    else:
-
-        result = poller_receipt.result()
+    #     result = poller_receipt.result()
     
 
-        json_dict = {
-            "receipt_content": result.content
-        }
+    #     json_dict = {
+    #         "receipt_content": result.content
+    #     }
         
-        if len(result.documents) > 1:
-            raise ValueError(f"There are multiple receipts in this file. Please adjust code to take into account.")
-        receipt = result.documents[0]
+    #     if len(result.documents) > 1:
+    #         raise ValueError(f"There are multiple receipts in this file. Please adjust code to take into account.")
+    #     receipt = result.documents[0]
 
+    if True:
+        #TODO: delete later
         import pickle
-        with open('temp.pickle', 'wb') as file:
-            pickle.dump(receipt, file)
+        import pprint
+        with open('temp.pickle', 'rb') as file:
+            receipt = pickle.load(file)
+        # print(receipt.fields.keys())
+        # ['Items', 'MerchantAddress', 'MerchantName', 'MerchantPhoneNumber', 'Subtotal', 'TaxDetails', 'Total', 'TotalTax', 'TransactionDate', 'TransactionTime']
+        temp_keys = list(receipt.fields.keys())
+        for k in temp_keys:
+            print(f'Key: {k}')
+            pprint.pprint(receipt.fields[k].to_dict())
+        # pprint.pprint(receipt.fields[temp_keys[2]], depth=1, width=60)
+
         return
         merchant_name = receipt.fields.get("MerchantName")
         if merchant_name:
