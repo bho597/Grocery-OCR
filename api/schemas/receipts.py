@@ -1,36 +1,34 @@
-def receiptEntity(item) -> dict:
-    """
-    Convert MongoDB BSON format to Python dictionary
+from datetime import date, time, datetime
 
-    #TODO: Complete docstring
-    Args:
-        item (_type_): _description_
+from typing import Optional
+from pydantic import BaseModel, field_validator, ValidationInfo, Field
 
-    Returns:
-        dict: A Python dictionary representing MongoDB item
-    """    
-    return {
-        "id": str(item["_id"]),
-        "filename": str(item["filename"]),
-        "merchant_name": str(item["merchant_name"]),
-        "receipt_date": str(item["receipt_date"]),
-        "image_url": str(item["image_url"]),
-        "transaction_date": str(item["transaction_date"]),
-        "transaction_time": str(item["transaction_time"]),
-        "modified_date": str(item["modified_date"]),
-        "textracted": bool(item["textracted"]),
-        "verified": bool(item["verified"]),
-    }
 
-def receiptEntities(entities) -> list:
-    """
-    Process list of receipt entities.
+class Receipt(BaseModel):
+    blob_name: str
+    MerchantName: str = None
+    Subtotal: Optional[float] = None
+    TotalTax: Optional[float] = None
+    Total: float
+    TransactionDate: Optional[date] = None
+    TransactionTime: Optional[time] = None
+    created_on: datetime = Field(default_factory=datetime.now)
+    last_modified: datetime = Field(default_factory=datetime.now)
+    textract_verified: bool = False
+    payment_settled: bool = False
+    paid_by: Optional[int] = None
 
-    #TODO: Complete docstring
-    Args:
-        entities (_type_): _description_
 
-    Returns:
-        list: list of receipt dictionaries
-    """    
-    return [receiptEntity(item) for item in entities]
+    @field_validator("Total", "Subtotal", "TotalTax", mode="before")
+    def validate_transaction_total(cls, v):
+        return round(v, 2)
+
+    @field_validator("Total", mode="after")
+    def validate_total(cls, v: str, info: ValidationInfo):
+        subtotal = info.data.get('Subtotal')
+        total_tax = info.data.get('TotalTax')
+        if subtotal and total_tax and v != round(subtotal + total_tax, 2):
+            raise ValueError(f'Total, Subtotal, and TotalTax do not add up. Please verify the values before continuing.')
+        return v
+
+

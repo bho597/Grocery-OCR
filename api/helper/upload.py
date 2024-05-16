@@ -1,62 +1,10 @@
-import logging
-import requests
 
-from api.config.azure_container import blob_service_client, generate_url
-from api.config.azure_document_intelligence import document_analysis_client
-
-logger = logging.getLogger(__name__)
+from api.config.azure_container import _upload_to_cloud_store, _generate_url
+from api.config.azure_document_intelligence import _azure_document_analysis
 
 
-def _upload_to_cloud_store(filepath: str) -> str:
-    """_summary_
-
-    Args:
-        filepath (str): Filepath for image file to upload
-
-    Returns:
-        str: Azure storage container blob URL.
-    """    
-    blob_name = filepath.split('/')[-1]
-
-    container_name = 'receipts'  
-    blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
-
-    # print("\nUploading to Azure Storage as blob:\n\t" + filename)
-
-    # Upload the created file
-    with open(file=filepath, mode="rb") as data:
-        try:
-            blob_client.upload_blob(data)
-        except Exception as e:
-            logger.error("Error uploading %r: %s" % (blob_name, e))
-            raise
-        else:
-            return blob_name
-
-
-def _azure_document_analysis(blob_name):
+def azure_document_analysis(blob_name):
     
-    # blob_url = generate_url(blob_name)
-    # blob_content = requests.get(blob_url).content
-
-    # try:
-    #     poller_receipt = document_analysis_client.begin_analyze_document("prebuilt-receipt", blob_content)
-    # except Exception as e:
-    #     logger.error("Error analyzing %r: %s" % (blob_name, e))
-    #     raise
-    # else:
-
-    #     result = poller_receipt.result()
-    
-
-    #     json_dict = {
-    #         "receipt_content": result.content
-    #     }
-        
-    #     if len(result.documents) > 1:
-    #         raise ValueError(f"There are multiple receipts in this file. Please adjust code to take into account.")
-    #     receipt = result.documents[0]
-
     if True:
         #TODO: delete later
         import pickle
@@ -65,13 +13,24 @@ def _azure_document_analysis(blob_name):
             receipt = pickle.load(file)
         # print(receipt.fields.keys())
         # ['Items', 'MerchantAddress', 'MerchantName', 'MerchantPhoneNumber', 'Subtotal', 'TaxDetails', 'Total', 'TotalTax', 'TransactionDate', 'TransactionTime']
-        temp_keys = list(receipt.fields.keys())
-        for k in temp_keys:
-            print(f'Key: {k}')
-            pprint.pprint(receipt.fields[k].to_dict())
+
+        selected_fileds = [
+            "MerchantName",
+            "Total",
+            "Subtotal",
+            "TotalTax",
+            "TransactionDate",
+            "TransactionTime",
+        ]
+
+        receipt_dict = {}
+        for k in selected_fileds:
+            # print(f'Key: {k}')
+            # pprint.pprint(receipt.fields[k].value)
+            receipt_dict[k] = receipt.fields.get(k).value
         # pprint.pprint(receipt.fields[temp_keys[2]], depth=1, width=60)
 
-        return
+        return receipt_dict
         merchant_name = receipt.fields.get("MerchantName")
         if merchant_name:
             json_dict["merchant_name"] = merchant_name.value
@@ -147,9 +106,15 @@ def _azure_document_analysis(blob_name):
                 df = pd.DataFrame(receipt_dict)
                 df.to_csv(f'outputs/{store_name}/{output_dir}/word_confidence.csv', index=False)
         
+from api.schemas.receipts import Receipt
+import pprint
+def temp(data: Receipt):
+    print(data)
+    return data
+blob_name = "20231029_costco.jpg"
 
-
-print(_azure_document_analysis("20231029_costco.jpg"))
+receipt = azure_document_analysis(blob_name)
+pprint.pprint(dict(Receipt(**receipt, blob_name=blob_name,)))#, last_modified=))
 
 
 import os
