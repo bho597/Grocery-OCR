@@ -3,7 +3,7 @@ import base64
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
 
-from api.model.receipt_model import Base
+from api.models.receipt_model import Base
 from api.config.postgresql import engine
 
 app = FastAPI()
