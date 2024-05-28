@@ -1,7 +1,7 @@
 from sqlalchemy import String, Boolean, Integer, Float, Column, text, TIMESTAMP, Date, Time
 from api.config.postgresql import Base
 
-class Product(Base):
+class Receipts(Base):
     __tablename__ = 'receipts'
 
     id = Column(Integer, primary_key=True, nullable=False)
