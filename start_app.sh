@@ -25,6 +25,6 @@ while ! $finished; do
         echo "API is ready"
     else
         echo "API not responding yet"
-        sleep 1
+        sleep 5
     fi
 done

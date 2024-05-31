@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class BaseServiceSettings(BaseSettings):
-    model_config = SettingsConfigDict(env_file='.env', extra='ignore')
+    model_config = SettingsConfigDict(env_file='dev.env', extra='ignore')
 
 
 class PostgreSQLSettings(BaseServiceSettings):
@@ -19,6 +19,7 @@ class AzureContainerSettings(BaseServiceSettings):
     account_name: str
     container_name: str
     account_key: str
+    container_name: str
 
     model_config = SettingsConfigDict(env_prefix = "azure_container_")
 

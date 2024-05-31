@@ -55,21 +55,21 @@ def validate_items(
 
         
 
-if __name__ == "__main__":
-    skip = [
-        # '20231222_berkeley_bowl',
-        # '20231217_berkeley_bowl',
-    ]
+# if __name__ == "__main__":
+#     skip = [
+#         # '20231222_berkeley_bowl',
+#         # '20231217_berkeley_bowl',
+#     ]
 
-    stores = [store.split('/')[-1] for store in glob('outputs/*')]
+#     stores = [store.split('/')[-1] for store in glob('outputs/*')]
 
-    for store in stores:
-        for file_path in glob(f'outputs/{store}/*'):
-            if not (
-                os.path.isfile(f'{file_path}/items.csv') or 
-                any(filename in file_path for filename in skip)
-            ):
-            # if any(filename in file_path for filename in skip):
-                print(file_path)
-                output_dir = file_path.split('/', 1)[-1]
-                validate_items(output_dir)
+#     for store in stores:
+#         for file_path in glob(f'outputs/{store}/*'):
+#             if not (
+#                 os.path.isfile(f'{file_path}/items.csv') or 
+#                 any(filename in file_path for filename in skip)
+#             ):
+#             # if any(filename in file_path for filename in skip):
+#                 print(file_path)
+#                 output_dir = file_path.split('/', 1)[-1]
+#                 validate_items(output_dir)

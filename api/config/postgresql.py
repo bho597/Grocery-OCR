@@ -19,8 +19,7 @@ Base = declarative_base()
 
 def get_db():
     #TODO: finish docstring
-    """
-    Provide a transactional scope around a series of operations.
+    """_summary:
 
     Yields:
         _type_: _description_

@@ -1,5 +1,3 @@
-import logging
-
 from datetime import datetime, timedelta, timezone
 
 from azure.identity import DefaultAzureCredential
@@ -7,46 +5,30 @@ from azure.storage.blob import BlobServiceClient, BlobSasPermissions, generate_b
 
 from api.config.settings import AzureContainerSettings
 
-logger = logging.getLogger(__name__)
-
 settings = AzureContainerSettings()
-default_credential = DefaultAzureCredential()
+# default_credential = DefaultAzureCredential()
 
 container_url = f"https://{settings.account_name}.blob.core.windows.net"
 
 # Create the BlobServiceClient object
-blob_service_client = BlobServiceClient(container_url, credential=default_credential)
+blob_service_client = BlobServiceClient(container_url, credential=settings.account_key)
 
 
-def _upload_to_cloud_store(filepath: str) -> str:
-    #TODO: complete docstring
-    """_summary_
+async def upload_to_cloud_store(receipt_file: bytes, blob_name: str):
+    """
+    _summary_
 
     Args:
-        filepath (str): Filepath for image file to upload
-
-    Returns:
-        str: Azure storage container blob URL.
+        receipt_file (bytes): _description_
+        filename (str): _description_
     """    
-    blob_name = filepath.split('/')[-1]
-
-    container_name = 'receipts'  
-    blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
-
-    # print("\nUploading to Azure Storage as blob:\n\t" + filename)
-
-    # Upload the created file
-    with open(file=filepath, mode="rb") as data:
-        try:
-            blob_client.upload_blob(data)
-        except Exception as e:
-            logger.error("Error uploading %r: %s" % (blob_name, e))
-            raise
-        else:
-            return blob_name
+    #TODO: complete docstring
+    blob_client = blob_service_client.get_blob_client(container=settings.container_name, blob=blob_name)
+    blob_client.upload_blob(receipt_file)
+    return True
 
 
-def _generate_url(blob_name: str) -> str:
+def generate_url(blob_name: str) -> str:
     #TODO: complete docstring
     """_summary_
 
