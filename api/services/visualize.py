@@ -8,14 +8,14 @@ import pandas as pd
 def draw_bounding_boxes(
     output_dir: str,
 ):
-    store_name, filename = output_dir.split('/')
-    if not os.path.isdir(f'outputs/{output_dir}'):
-        raise FileNotFoundError(f"The file has not been textracted. Output directory '{output_dir}' does not exist in `outputs`.")
+    _, store_name, filename = output_dir.split('/')
+    # if not os.path.isdir(f'outputs/{output_dir}'):
+    #     raise FileNotFoundError(f"The file has not been textracted. Output directory '{output_dir}' does not exist in `outputs`.")
     
     # Load your image
-    image = cv2.imread(f'assets/{filename}.jpg')
+    image = cv2.imread(f'assets/verified/{filename}.jpg')
 
-    df = pd.read_csv(f'outputs/{output_dir}/word_confidence.csv')
+    df = pd.read_csv(f'outputs_old/{store_name}/{filename}/word_confidence.csv')
 
     columns_to_extract = [
         'bounding_box_point_1_x', 'bounding_box_point_1_y',
@@ -48,5 +48,5 @@ def draw_bounding_boxes(
 
 if __name__ == "__main__":
     draw_bounding_boxes(
-        "berkeley_bowl/20231222_berkeley_bowl",
+        "outputs_old/berkeley_bowl/20231202_berkeley_bowl",
     )

@@ -6,9 +6,11 @@ class Receipts(Base):
 
     id = Column(Integer, primary_key=True, nullable=False)
     blob_name = Column(String, nullable=False)
-    merchant_name = Column(String, nullable=False)
+    merchant_name = Column(String)
     subtotal = Column(Float)
     total_tax = Column(Float)
+    total_tax_percent = Column(Float)
+    discount = Column(Float)
     total = Column(Float, nullable=False)
     transaction_date = Column(Date)
     transaction_time = Column(Time)

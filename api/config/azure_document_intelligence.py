@@ -15,7 +15,7 @@ document_analysis_client = DocumentAnalysisClient(
 )
 
 
-async def azure_document_analysis(
+def azure_document_analysis(
     blob_url: str,
 ):
     #TODO: Complete docstring
@@ -31,12 +31,13 @@ async def azure_document_analysis(
         _type_: _description_
     """    
     blob_content = requests.get(blob_url).content
+
     poller_receipt = document_analysis_client.begin_analyze_document("prebuilt-receipt", blob_content)
     result = poller_receipt.result()
 
+
     if len(result.documents) > 1:
         raise ValueError(f"There are multiple receipts in this file. Please adjust image to take into account.")
-    
     receipt = result.documents[0]
     page = result.pages[0]
     analysis_dict = {}
@@ -72,11 +73,13 @@ def _get_line_items_list(receipt):
         for _, item in enumerate(receipt.fields.get("Items").value):
             item_dict = {}
             item_description = item.value.get("Description")
-            item_dict["item_description"] = item_description.value
-
-            
             item_total_price = item.value.get("TotalPrice")
-            item_dict["item_total_price"] = item_total_price.value
+
+            if item_description is None and item_total_price is None:
+                continue
+
+            item_dict["item_description"] = item_description.value if item_description else None
+            item_dict["item_total_price"] = item_total_price.value if item_total_price else None
         
             items.append(item_dict)
 
@@ -100,20 +103,29 @@ def _is_within(word_bbox, line_bbox):
 def _get_word_list(
     page
 ):
-    line_bboxes = [(i, line.content, _extract_bounding_box(line.polygon)) for i, line in enumerate(page.lines)]
     word_bboxes = [(i, word.content, _extract_bounding_box(word.polygon), word.confidence) for i, word in enumerate(page.words)]
+    line_bboxes = [(i, line.content, _extract_bounding_box(line.polygon)) for i, line in enumerate(page.lines)]
 
     word_list = []
     for word_index, word, word_bbox, confidence in word_bboxes:
         for line_index, line, line_bbox in line_bboxes:
             if _is_within(word_bbox, line_bbox):
-                if word not in line:
-                    raise ValueError(f'Word content "{word}" is not withint line content "{line}"')
                 word_dict = {}
+
+                if word not in line:
+                    #TODO: log info
+                    print(f'Word content "{word}" is not withint line content "{line}"')
+                    word_dict['line_index'] = None
+                else:
+                    word_dict['line_index'] = line_index
+                    
                 word_dict['word'] = word
                 word_dict['word_index'] = word_index
-                word_dict['line_index'] = line_index
                 word_dict['confidence'] = confidence
+                word_dict['min_x'] = word_bbox[0]
+                word_dict['min_y'] = word_bbox[1]
+                word_dict['max_x'] = word_bbox[2]
+                word_dict['max_y'] = word_bbox[3]
                 word_list.append(word_dict)
 
     return word_list
