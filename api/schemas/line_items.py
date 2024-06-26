@@ -6,7 +6,7 @@ from pydantic import BaseModel, field_validator, Field
 class LineItem(BaseModel):
     item_description: Optional[str]
     item_total_price: Optional[float]
-    line_item_number: Optional[int]
+    line_item_number: Optional[int] = None
     receipt_id: int
     is_taxed: bool = False
     bought_by: Optional[int] = None
