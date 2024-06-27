@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, field_validator, Field
 
 
@@ -18,3 +18,13 @@ class LineItem(BaseModel):
         if v is None:
             return v
         return round(v, 2)
+
+
+class SplitRequest(BaseModel):
+    quantity: List[float] = Field(min_length=1)
+
+    @field_validator("quantity", mode="before")
+    def validate_transaction_total(cls, v):
+        if 1 - sum(v) > .001:
+            raise ValueError('Ratios do not add up to 1')
+        return v

@@ -36,13 +36,39 @@ async def get_next_line_number(db: Session, receipt_id: int):
     line_number = db.query(func.max(LineItems.line_item_number)).filter(LineItems.receipt_id == receipt_id).scalar() + 1
     return line_number
 
-async def update_line_item_by_id(db: Session, update_post, data) -> dict:
+async def update_line_item(db: Session, update_post, data) -> bool:
     for key, value in data.items():
         setattr(update_post, key, value)
     db.commit()
     return True
 
-async def delete_line_item_by_id(db: Session, delete_post) -> dict:
+async def delete_line_item(db: Session, delete_post) -> bool:
     db.delete(delete_post)
     db.commit()
+    return True
+
+async def split_line_item(db: Session, splits, total_price: int, split_post) -> bool:
+    initial_splits = [total_price * s for s in splits]
+    rounded_splits = [round(amount, 2) for amount in initial_splits]
+
+    total_rounded = sum(rounded_splits)
+    difference = round(total_price - total_rounded, 2)
+    
+
+    max_index = rounded_splits.index(max(rounded_splits))
+    rounded_splits[max_index] += difference
+    
+    split_post_dict = dict((column.name, getattr(split_post, column.name)) for column in split_post.__table__.columns if column.name != 'id')
+    line_item_instances = []
+    for rounded_split in rounded_splits:
+        new_instance_dict = split_post_dict.copy()
+        new_instance_dict['item_total_price'] = rounded_split
+        new_instance = LineItems(**new_instance_dict)
+        line_item_instances.append(new_instance)
+
+    db.add_all(line_item_instances)
+    db.commit()
+
+    for instance in line_item_instances:
+        db.refresh(instance)
     return True

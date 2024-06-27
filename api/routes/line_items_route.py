@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from api.config.postgresql import get_db
 # from api.config.azure_container import upload_to_cloud_store, generate_url
 # from api.config.azure_document_intelligence import azure_document_analysis
-from api.schemas.line_items import LineItem
+from api.schemas.line_items import LineItem, SplitRequest
 from api.services import line_items as line_items_service
 from api.services import receipts as receipt_service
 
@@ -45,23 +45,32 @@ async def get_line_item(line_item_id: int, db: Session = Depends(get_db)):
     return line_item
 
 
-@lineItemsRoute.put(base+'/{id}', status_code=status.HTTP_204_NO_CONTENT)
-async def update_line_item(id, data: LineItem, db: Session = Depends(get_db)):
-    result = await line_items_service.get_line_item_by_id(db=db, id=id)
+@lineItemsRoute.put(base+'/{line_item_id}', status_code=status.HTTP_204_NO_CONTENT)
+async def update_line_item(line_item_id, data: LineItem, db: Session = Depends(get_db)):
+    result = await line_items_service.get_line_item_by_id(db=db, id=line_item_id)
     if result is None:
-        raise HTTPException(status_code=404, detail=f"Could not find line item with the given Id: {id}.")
-
-    await line_items_service.update_line_item_by_id(db=db, update_post=result, data=data.model_dump())
+        raise HTTPException(status_code=404, detail=f"Could not find line item with the given Id: {line_item_id}.")
+    if result.id != line_item_id:
+        raise HTTPException(status_code=404, detail=f"Could not find line item with the given Id: {line_item_id}.")
+    await line_items_service.update_line_item(db=db, update_post=result, data=data.model_dump())
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@lineItemsRoute.delete(base+'/{id}', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_line_item(id: int, db: Session = Depends(get_db)):
-    result = await line_items_service.get_line_item_by_id(db=db, id=id)
+@lineItemsRoute.delete(base+'/{line_item_id}', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_line_item(line_item_id: int, db: Session = Depends(get_db)):
+    result = await line_items_service.get_line_item_by_id(db=db, id=line_item_id)
     if result is None:
-        raise HTTPException(status_code=404, detail=f"Could not find line item with the given Id: {id}.")
-    await line_items_service.delete_line_item_by_id(db=db, delete_post=result)
+        raise HTTPException(status_code=404, detail=f"Could not find line item with the given Id: {line_item_id}.")
+    await line_items_service.delete_line_item(db=db, delete_post=result)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
+@lineItemsRoute.put(base+'/{line_item_id}/split', status_code=status.HTTP_204_NO_CONTENT)
+async def split_line_item(line_item_id: int, data: SplitRequest, db: Session = Depends(get_db)):
+    result = await line_items_service.get_line_item_by_id(db=db, id=line_item_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail=f"Could not find line item with the given Id: {line_item_id}.")
 
+    await line_items_service.split_line_item(db=db, splits=data.quantity, total_price=result.item_total_price, split_post=result)
+    await line_items_service.delete_line_item(db=db, delete_post=result)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

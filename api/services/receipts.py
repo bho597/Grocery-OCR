@@ -23,18 +23,18 @@ async def upload_receipt(db: Session, receipt_dict, filename: str):
     db.add(new_receipt)
     db.commit()
     db.refresh(new_receipt)
-
+    return True
 
 async def get_receipt_by_id(db: Session, id: int) -> dict:
     receipt = db.query(Receipts).filter(Receipts.id == id).first()
     return receipt
 
-async def delete_receipt_by_id(db: Session, delete_post) -> dict:
+async def delete_receipt_by_id(db: Session, delete_post) -> bool:
     db.delete(delete_post)
     db.commit()
     return True
 
-async def update_receipt_by_id(db: Session, update_post, data) -> dict:
+async def update_receipt_by_id(db: Session, update_post, data) -> bool:
     for key, value in data.items():
         setattr(update_post, key, value)
     db.commit()
