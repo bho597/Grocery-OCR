@@ -30,6 +30,7 @@ async def verify_textract(db: Session = Depends(get_db)):
             failed_verify_line_items.append(receipt.id)
             continue
         
+        await receipt_service.confirm_textract(db=db, receipt=receipt)
         success.append(receipt.id)
 
     return {

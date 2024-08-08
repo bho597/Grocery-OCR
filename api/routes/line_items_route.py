@@ -50,8 +50,6 @@ async def update_line_item(line_item_id, data: LineItem, db: Session = Depends(g
     result = await line_items_service.get_line_item_by_id(db=db, id=line_item_id)
     if result is None:
         raise HTTPException(status_code=404, detail=f"Could not find line item with the given Id: {line_item_id}.")
-    if result.id != line_item_id:
-        raise HTTPException(status_code=404, detail=f"Could not find line item with the given Id: {line_item_id}.")
     await line_items_service.update_line_item(db=db, update_post=result, data=data.model_dump())
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 

@@ -11,7 +11,7 @@ async def update_subtotal(db: Session, receipt):
     return True
 
 def verify_total(receipt):
-    return receipt.subtotal is not None and _float_equality(receipt.subtotal + receipt.total_tax, receipt.total)
+    return receipt.subtotal is not None and _float_equality(receipt.subtotal + receipt.total_tax - receipt.discount, receipt.total)
         
     
 def verify_line_items(receipt, line_items):

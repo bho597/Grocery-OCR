@@ -45,3 +45,7 @@ async def get_all_unverified_receipts(db: Session) -> dict:
     return unverified_receipts
 
 
+async def confirm_textract(db: Session, receipt):
+    setattr(receipt, 'textract_verified', True)
+    db.commit()
+    return True
