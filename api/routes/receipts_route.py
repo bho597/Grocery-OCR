@@ -47,10 +47,10 @@ async def create_receipt(files: list[UploadFile], db: Session = Depends(get_db))
                     analysis_dict = azure_document_analysis(blob_url=image_url)
                     receipt_dict, line_item_list, word_list = analysis_dict['receipt'], analysis_dict['line_items'], analysis_dict['words']
 
-                    # await receipt_service.upload_receipt(db=db, receipt_dict=receipt_dict, filename=file.filename)
-                    # receipt_id = await receipt_service.get_receipt_id_by_blob_name(db=db, blob_name=file.filename)
-                    # await line_items_service.upload_line_items(db=db, line_item_list=line_item_list, receipt_id=receipt_id)
-                    # await words_service.upload_words(db=db, word_list=word_list, receipt_id=receipt_id)
+                    await receipt_service.upload_receipt(db=db, receipt_dict=receipt_dict, filename=file.filename)
+                    receipt_id = await receipt_service.get_receipt_id_by_blob_name(db=db, blob_name=file.filename)
+                    await line_items_service.upload_line_items(db=db, line_item_list=line_item_list, receipt_id=receipt_id)
+                    await words_service.upload_words(db=db, word_list=word_list, receipt_id=receipt_id)
         except Exception as e:
             print(str(e))
             fail.append(file.filename)
