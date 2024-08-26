@@ -76,23 +76,3 @@ def _float_equality(float_1, float_2, tol=1e-3):
 #                 print('ERROR')
 
 #     print()
-
-
-
-# if __name__ == "__main__":
-#     # filepaths = [filepath.split('/')[-1].split('.')[0] for filepath in glob('assets/unverified/*')]
-    
-#     # temp = [glob(f'outputs/*/{filepath}/items.csv')[0] for filepath in filepaths]
-#     # print(temp)
-
-#     paid_dict = {
-#         'outputs/berkeley_bowl/20240210_berkeley_bowl/items.csv': 'j', 
-#         'outputs/trader_joes/20240210_trader_joes/items.csv': 'b', 
-#         'outputs/target/20240219_target/items.csv': 'b', 
-#         'outputs/berkeley_bowl/20240220_berkeley_bowl/items.csv': 'b', 
-#         'outputs/trader_joes/20240221_trader_joes/items.csv': 'b',
-#     }
-
-
-#     for file_path in paid_dict.keys():
-#         calculate(file_path, paid_dict[file_path])

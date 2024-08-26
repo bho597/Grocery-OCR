@@ -1,8 +1,6 @@
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-from api.config.settings import Settings
-
 
 defaultRoute = APIRouter()
 

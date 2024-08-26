@@ -1,23 +1,14 @@
-import requests
-
-# from io import BytesIO
 from fastapi import APIRouter
-# from fastapi.responses import StreamingResponse
 from fastapi import status, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
-# from azure.core.exceptions import ResourceExistsError
 
 from api.config.postgresql import get_db
-# from api.config.azure_container import upload_to_cloud_store, generate_url
-# from api.config.azure_document_intelligence import azure_document_analysis
 from api.schemas.line_items import LineItem, SplitRequest
 from api.services import line_items as line_items_service
 from api.services import receipts as receipt_service
 
 lineItemsRoute = APIRouter()
 base = '/line_items'
-# base_image = '/receipts-image'
-# unverified_base = '/unverified_receipts'
 
 
 
