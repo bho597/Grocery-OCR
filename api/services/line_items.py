@@ -38,7 +38,6 @@ async def get_next_line_number(db: Session, receipt_id: int):
 
 async def update_line_item(db: Session, update_post, data) -> bool:
     for key, value in data.items():
-        print(f'{key}: {value}')
         setattr(update_post, key, value)
     db.commit()
     return True

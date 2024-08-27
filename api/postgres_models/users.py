@@ -1,7 +1,7 @@
-from sqlalchemy import String, Integer, Float, Column, TIMESTAMP, text
+from sqlalchemy import String, Integer, Column, TIMESTAMP, text
 from api.config.postgresql import Base
 
-class Words(Base):
+class Users(Base):
     __tablename__ = 'users'
 
 
