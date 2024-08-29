@@ -165,3 +165,12 @@ cython_debug/
 *.JPG
 *.csv
 *.json
+*.pickle
+
+# Kubernetes Secrets
+postgres-secret.yaml
+fastapi-secret.yaml
+public-key-cert.pem
+
+# Miscellaneous
+test*.py

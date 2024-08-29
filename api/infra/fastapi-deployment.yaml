@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-deployment
+  namespace: grocery-ocr-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+        - name: fastapi
+          image: grocery-ocr-api:latest
+          env:
+          - name: postgresql_url
+            valueFrom:
+              secretKeyRef:
+                name: fastapi-secret
+                key: url
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000

@@ -11,13 +11,26 @@ pandas = "^2.1.4"
 azure-core = "^1.29.6"
 azure-ai-formrecognizer = "^3.3.2"
 numpy = "^1.26.3"
-opencv-python = "^4.9.0.80"
-textdistance = "^4.6.1"
+fastapi = "^0.110.1"
+uvicorn = "^0.29.0"
+python-multipart = "^0.0.9"
+pydantic = "^2.7.1"
+pydantic-settings = "^2.2.1"
+azure-identity = "^1.16.0"
+azure-storage-blob = "^12.20.0"
+requests = "^2.31.0"
+sqlalchemy = "^2.0.30"
+psycopg2-binary = "^2.9.9"
+google-api-python-client = "^2.135.0"
+google-auth-httplib2 = "^0.2.0"
+google-auth-oauthlib = "^1.2.0"
+google-auth = "^2.34.0"
 
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "^2.0.4"
 python-dotenv = "^1.0.0"
+pytest = "^8.1.1"
 
 [build-system]
 requires = ["poetry-core"]
