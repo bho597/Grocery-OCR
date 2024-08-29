@@ -12,11 +12,11 @@
 
 ### Interactive API Documentation
 
-[![API docs](images/FastAPI Docs.png)](https://github.com/bho597/Grocery-OCR/tree/main))
+[![API docs](images/FastAPI_Docs.png)](https://github.com/bho597/Grocery-OCR/tree/main)
 
 ### GoogleSheets Integration
 
-[![Google Sheets API Integration](images/GoogleSheets API.png)](https://github.com/bho597/Grocery-OCR/tree/main))
+[![Google Sheets API Integration](images/GoogleSheets_API.png)](https://github.com/bho597/Grocery-OCR/tree/main)
 
 ## How To Use It
 
