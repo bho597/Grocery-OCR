@@ -1,4 +1,4 @@
-from sqlalchemy import String, Boolean, Integer, Float, Column, text, TIMESTAMP, Date, Time
+from sqlalchemy import String, Boolean, Integer, Float, Column, text, TIMESTAMP, Date, Time, ARRAY
 from api.config.postgresql import Base
 
 class Receipts(Base):
@@ -19,4 +19,5 @@ class Receipts(Base):
     textract_verified = Column(Boolean, nullable=False, server_default=text('false'))
     payment_settled = Column(Boolean, nullable=False, server_default=text('false'))
     paid_by = Column(Integer)
+    bought_by = Column(ARRAY(Integer))
     

@@ -147,3 +147,18 @@ async def export_receipt_to_google_sheets(data, options, range_name='Sheet1!A1:Z
         apply_dropdown_to_column(service, SPREADSHEET_ID, line_index_count=len(data), options=options)
     except HttpError as err:
         raise str(err)
+
+
+def parse_receipt(line_items, receipt):
+    total_dict = {user: 0 for user in [0] + receipt.bought_by}
+
+    for line_item in line_items:
+        total_dict[line_item.bought_by] += line_item.item_total_price
+
+    total_dict = {key: round(value, 2) for key, value in total_dict.items()}
+
+    split_amount = round(total_dict[0] / len(receipt.bought_by), 2)
+    split_dict = {key: round(value + split_amount, 2) for key, value in total_dict.items() if key != 0}
+
+    return split_dict
+    

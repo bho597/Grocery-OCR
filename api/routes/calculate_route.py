@@ -46,9 +46,13 @@ async def export_receipt_to_google_sheet(
     receipt_id: int,
     db: Session = Depends(get_db),
     header: str = HEADER,
-    ids: List[int] = Query(default=None, description="List of integer IDs")
+    ids: List[int] = Query(default=None, description="List of user IDs")
 ):
     receipt = await receipt_service.get_receipt_by_id(db=db, id=receipt_id)
+    receipt_dict = {header: getattr(receipt, header) for header in receipt.__table__.columns.keys()}
+    receipt_dict['bought_by'] = ids
+    await receipt_service.update_receipt_by_id(db=db, update_post=receipt, data=receipt_dict)
+    
     line_items = await line_items_service.get_line_items_by_receipt_id(db=db, receipt_id=receipt.id)
 
     data = [header]
@@ -81,3 +85,30 @@ async def update_line_items_from_google_sheet(receipt_id: int, db: Session = Dep
         bought_by = await users_service.get_user_id_by_name(db=db, user=value[-1]) if value[-1] != 'All' else 0
         line_item_dict['bought_by'] = bought_by
         await line_items_service.update_line_item(db=db, update_post=line_item, data=line_item_dict)
+
+@calculateRoute.get((base+'parse_receipt/{receipt_id}'))
+async def parse_receipt(receipt_id: int, db: Session = Depends(get_db)):
+    receipt = await receipt_service.get_receipt_by_id(db=db, id=receipt_id)
+    if receipt.textract_verified:
+
+        line_items = await line_items_service.get_line_items_by_receipt_id(db=db, receipt_id=receipt_id)
+        
+
+        result = calculate.parse_receipt(line_items=line_items, receipt=receipt)
+
+        paid_by_user = await users_service.get_user_by_id(db=db, id=receipt.paid_by)
+        paid_by = paid_by_user.user
+
+        message = ''
+        for user in result.keys():
+            if user != receipt.paid_by:
+                bought_by_user = await users_service.get_user_by_id(db=db, id=user)
+                bought_by = bought_by_user.user
+                message += f'{bought_by} owes {paid_by} ${result[user]:.2f}.'
+    else:
+        message = 'Verify receipt has been textracted.'
+
+
+    return {
+        'message': message
+    }

@@ -1,7 +1,7 @@
 from datetime import date, time, datetime
 
-from typing import Optional
-from pydantic import BaseModel, field_validator, ValidationInfo, Field
+from typing import Optional, List
+from pydantic import BaseModel, field_validator, Field
 
 
 class Receipt(BaseModel):
@@ -19,6 +19,7 @@ class Receipt(BaseModel):
     textract_verified: bool = False
     payment_settled: bool = False
     paid_by: Optional[int] = None
+    bought_by: Optional[List[int]] = None
 
 
     @field_validator("total", "subtotal", "total_tax", mode="before")
