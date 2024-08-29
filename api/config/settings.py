@@ -1,5 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import List, Union
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -12,11 +13,6 @@ class BaseServiceSettings(BaseSettings):
 
 
 class PostgreSQLSettings(BaseServiceSettings):
-    # user: str
-    # password: str
-    # hostname: str
-    # database_name: str
-    # port: int
     url: str
 
     model_config = SettingsConfigDict(env_prefix = "postgresql_")
@@ -38,17 +34,24 @@ class AzureDocumentIntelligenceSettings(BaseServiceSettings):
     model_config = SettingsConfigDict(env_prefix = "azure_document_intelligence_")
 
 
-# class GoogleSheetsSettings(BaseServiceSettings):
-#     scope: str
-#     spreadsheet_id: str
+class GoogleSheetsSettings(BaseServiceSettings):
+    scopes: Union[List[str], str]
+    spreadsheet_id: str
+    sheet_name: str
     
-#     model_config = SettingsConfigDict(env_prefix = "gooogle_sheets_")
+    model_config = SettingsConfigDict(env_prefix = "google_sheets_")
+
+    @field_validator("scopes", mode="before")
+    def validate_transaction_total(cls, v):
+        if isinstance(v, str):
+            return v.split(',')
+        return v
 
 class Settings(BaseModel):
     postgresql_settings: PostgreSQLSettings = PostgreSQLSettings()
     azure_container_settings: AzureContainerSettings = AzureContainerSettings()
     azure_document_intelligence_settings: AzureDocumentIntelligenceSettings = AzureDocumentIntelligenceSettings()
-    # google_sheets_settings: GoogleSheetsSettings = GoogleSheetsSettings()
+    google_sheets_settings: GoogleSheetsSettings = GoogleSheetsSettings()
 
 
 settings = Settings()

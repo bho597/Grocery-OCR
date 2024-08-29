@@ -24,6 +24,7 @@ psycopg2-binary = "^2.9.9"
 google-api-python-client = "^2.135.0"
 google-auth-httplib2 = "^0.2.0"
 google-auth-oauthlib = "^1.2.0"
+google-auth = "^2.34.0"
 
 
 [tool.poetry.group.dev.dependencies]
