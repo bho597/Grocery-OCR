@@ -105,6 +105,9 @@ async def parse_receipt(receipt_id: int, db: Session = Depends(get_db)):
                 bought_by_user = await users_service.get_user_by_id(db=db, id=user)
                 bought_by = bought_by_user.user
                 message += f'{bought_by} owes {paid_by} ${result[user]:.2f}.'
+        
+        
+
     else:
         message = 'Verify receipt has been textracted.'
 
