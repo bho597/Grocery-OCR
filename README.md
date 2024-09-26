@@ -8,6 +8,7 @@
     - 💾 [PostgreSQL](https://www.postgresql.org) as the SQL database.
     - 📊 [GoogleSheetsAPI](https://developers.google.com/sheets) for easy database interaction.
 - 🐋 [Docker Compose](https://www.docker.com) for development and production.
+- 📊 [Looker Studio](https://cloud.google.com/looker-studio) for data visualization and interactive dashboards
 - ✅ Tests with [Pytest](https://pytest.org).
 
 ### Interactive API Documentation
@@ -17,6 +18,10 @@
 ### GoogleSheets Integration
 
 [![Google Sheets API Integration](images/GoogleSheets_API.png)](https://github.com/bho597/Grocery-OCR/tree/main)
+
+### GoogleSheets Integration
+
+[![Looker Studio Dashboard](images/Looker_Studio.png)](https://github.com/bho597/Grocery-OCR/tree/main)
 
 ## How To Use It
 
